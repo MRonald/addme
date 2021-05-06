@@ -8,5 +8,20 @@
             "username": "Anonymous",
             "password": ""
         }
+    ],
+    "users": [
+        {
+            "name": "Eduardo Santos",
+            "cpf": "213.123.123-45",
+            "email": "edusantos@email.com",
+            "urlImage": "https://randomuser.me/api/portraits/men/1.jpg",
+            "address": {
+                "cep": 13454000,
+                "street": "Rua Talvez",
+                "number": 785,
+                "district": "bairro azul",
+                "city": "cidade eterna"
+            }
+        }
     ]
 }
