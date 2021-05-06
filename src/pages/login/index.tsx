@@ -1,5 +1,9 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
+
+import { URL_BACKEND } from '../../config';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 const LoginWrapper = styled.div`
     display: flex;
@@ -51,22 +55,58 @@ const LoginWrapper = styled.div`
     }
     p {
         text-align: center;
-        margin: 15px 0;
+        margin: 15px 0 -10px;
+        color: red;
     }
 `;
 
 export default function Login() {
+    const [authenticatedUsers, setAuthenticatedUsers] = useState([]);
+    const [valueUsername, setValueUsername] = useState("");
+    const [valuePassword, setValuePassword] = useState("");
+    const [redirect, setRedirect] = useState(false);
+    const [message, setMessage] = useState("");
+
+    useEffect(() => {
+        axios.get(`${URL_BACKEND}/authenticatedUsers`).then(
+            response => setAuthenticatedUsers(response.data)
+        );
+    }, []);
+
+    function login() {
+        let loginSuccessfully = false;
+        authenticatedUsers.forEach((user) => {
+            if (user["username"] === valueUsername) {
+                if (user["password"] === valuePassword) {
+                    loginSuccessfully = true;
+                }
+            }
+        });
+        if (loginSuccessfully) {
+            localStorage.setItem('tokenLogin', valueUsername);
+            setRedirect(true);
+        } else {
+            setMessage("Nome de usuário e/ou senha inválidos");
+        }
+    }
+
     return (
-        <LoginWrapper>
-            <h1>AddMe</h1>
-            <div className="fields">
-                <label htmlFor="username">Nome de usuário no GitHub</label>
-                <input type="text" id="username" required/>
-                <label htmlFor="password">Senha</label>
-                <input type="password" id="password" required/>
-            </div>
-            <button>Login</button>
-            <p>Ainda não tem conta? <Link to="/register">Cadastre-se</Link></p>
-        </LoginWrapper>
+        <>
+            {!redirect ? (
+                <LoginWrapper>
+                    <h1>AddMe</h1>
+                    <p>{message !== "" && message}</p>
+                    <div className="fields">
+                        <label htmlFor="username">Nome de usuário no GitHub</label>
+                        <input type="text" id="username" onChange={e => setValueUsername(e.target.value)}/>
+                        <label htmlFor="password">Senha</label>
+                        <input type="password" id="password" onChange={e => setValuePassword(e.target.value)}/>
+                    </div>
+                    <button onClick={login}>Login</button>
+                </LoginWrapper>
+            ) : (
+                <Redirect to="/app"/>
+            )}
+        </>
     );
 }

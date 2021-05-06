@@ -1,6 +1,12 @@
 {
-    "nomes": [
-        "Michael",
-        "Ronald"
+    "authenticatedUsers": [
+        {
+            "username": "admin",
+            "password": "admin"
+        },
+        {
+            "username": "Anonymous",
+            "password": ""
+        }
     ]
 }
